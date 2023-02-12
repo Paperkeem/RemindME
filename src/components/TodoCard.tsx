@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { IToDo, toDoState } from "../atoms/atoms";
+import { Categories, IToDo, toDoState } from "../atoms/atoms";
 
 export default function TodoCard({ id, text, category }: IToDo) {
   const [toDos, setToDos] = useRecoilState(toDoState);
@@ -20,18 +20,18 @@ export default function TodoCard({ id, text, category }: IToDo) {
   return (
     <li>
       <span>{text}</span>
-      {category !== "TO_DO" && (
-        <button name="TO_DO" onClick={handleClick}>
+      {category !== Categories.TO_DO && (
+        <button name={Categories.TO_DO} onClick={handleClick}>
           To Do
         </button>
       )}
-      {category !== "DOING" && (
-        <button name="DOING" onClick={handleClick}>
+      {category !== Categories.DOING && (
+        <button name={Categories.DOING} onClick={handleClick}>
           Doing
         </button>
       )}
-      {category !== "DONE" && (
-        <button name="DONE" onClick={handleClick}>
+      {category !== Categories.DONE && (
+        <button name={Categories.DONE} onClick={handleClick}>
           Done
         </button>
       )}
