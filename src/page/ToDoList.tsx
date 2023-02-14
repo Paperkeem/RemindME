@@ -16,7 +16,7 @@ export default function ToDoList() {
     <div>
       <h1>To Dos</h1>
       <hr />
-      <form action="">
+      <form>
         <select value={category} onChange={handleChangeCategory}>
           <option value={Categories.TO_DO}>To Do</option>
           <option value={Categories.DOING}>Doing</option>
