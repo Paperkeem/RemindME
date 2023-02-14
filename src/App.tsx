@@ -1,7 +1,9 @@
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useRecoilState } from "recoil";
 import styled, { createGlobalStyle } from "styled-components";
 import "./App.css";
+import { dndState } from "./atoms/dnd";
 import ToDoList from "./page/ToDoList";
 
 const GlobalStyle = createGlobalStyle`
@@ -66,20 +68,61 @@ const GlobalStyle = createGlobalStyle`
   }
   `;
 
-const toDos = ["a", "b", "c", "d", "e"];
-
 export default function App() {
-  const onDragEnd = () => {};
+  const [toDos, setToDos] = useRecoilState(dndState);
+
+  const onDragEnd = (args: any) => {
+    if (!args.destination) return;
+    const {
+      draggableId,
+      destination: { index: DIndex },
+      source: { index: OriIndex },
+    } = args;
+
+    setToDos((oldToDos) => {
+      // 1번째 방법
+      // const meter = DIndex - OriIndex;
+      // if (meter >= 0) {
+      //   return [
+      //     ...oldToDos.slice(0, OriIndex),
+      //     ...oldToDos.slice(OriIndex + 1, DIndex + 1),
+      //     draggableId,
+      //     ...oldToDos.slice(DIndex + 1),
+      //   ];
+      // } else {
+      //   return [
+      //     ...oldToDos.slice(0, DIndex),
+      //     draggableId,
+      //     ...oldToDos.slice(DIndex, DIndex - meter),
+      //     ...oldToDos.slice(OriIndex + 1),
+      //   ];
+
+      // 2번째 방법
+      // let copyToDos = [...oldToDos];
+      // copyToDos.splice(OriIndex, 1);
+
+      // return [
+      //   ...copyToDos.slice(0, OriIndex - 1),
+      //   draggableId,
+      //   ...copyToDos.slice(OriIndex - 1),
+      // ];
+
+      const copyToDos = [...oldToDos];
+      copyToDos.splice(OriIndex, 1);
+      copyToDos.splice(DIndex, 0, draggableId);
+      return copyToDos;
+    });
+  };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <GlobalStyle />
       <Wrapper>
         <Boards>
-          <Droppable droppableId="one">
+          <Droppable droppableId="firstBoard">
             {(magic) => (
               <Board ref={magic.innerRef} {...magic.droppableProps}>
                 {toDos.map((toDo, idx) => (
-                  <Draggable draggableId={toDo} index={idx}>
+                  <Draggable key={toDo} draggableId={toDo} index={idx}>
                     {(magic) => (
                       <Card
                         ref={magic.innerRef}
