@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { Categories, IToDo, toDoState } from "../atoms/atoms";
+import { Categories, IToDo, toDoState } from "../../atoms/atoms";
 import { BsTrash } from "react-icons/bs";
 
 export default function TodoCard({ id, text, category }: IToDo) {

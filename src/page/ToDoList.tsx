@@ -1,8 +1,8 @@
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Categories, categoryState, toDoSelector } from "../atoms/atoms";
-import CreateToDo from "../components/CreateToDo";
-import TodoCard from "../components/TodoCard";
+import CreateToDo from "../components/todo/CreateToDo";
+import TodoCard from "../components/todo/TodoCard";
 
 export default function ToDoList() {
   const toDos = useRecoilValue(toDoSelector);
