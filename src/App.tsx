@@ -1,9 +1,9 @@
 import React from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled, { createGlobalStyle } from "styled-components";
 import { dndState } from "./atoms/dnd";
-import DragableCard from "./components/DragableCard";
+import Board from "./components/Board";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -77,56 +77,23 @@ export default function App() {
       destination: { index: DIndex },
       source: { index: OriIndex },
     } = args;
+    console.log(args);
 
-    setToDos((oldToDos) => {
-      // 1번째 방법
-      // const meter = DIndex - OriIndex;
-      // if (meter >= 0) {
-      //   return [
-      //     ...oldToDos.slice(0, OriIndex),
-      //     ...oldToDos.slice(OriIndex + 1, DIndex + 1),
-      //     draggableId,
-      //     ...oldToDos.slice(DIndex + 1),
-      //   ];
-      // } else {
-      //   return [
-      //     ...oldToDos.slice(0, DIndex),
-      //     draggableId,
-      //     ...oldToDos.slice(DIndex, DIndex - meter),
-      //     ...oldToDos.slice(OriIndex + 1),
-      //   ];
-
-      // 2번째 방법
-      // let copyToDos = [...oldToDos];
-      // copyToDos.splice(OriIndex, 1);
-
-      // return [
-      //   ...copyToDos.slice(0, OriIndex - 1),
-      //   draggableId,
-      //   ...copyToDos.slice(OriIndex - 1),
-      // ];
-
-      const copyToDos = [...oldToDos];
-      copyToDos.splice(OriIndex, 1);
-      copyToDos.splice(DIndex, 0, draggableId);
-      return copyToDos;
-    });
+    // setToDos((oldToDos) => {
+    //   const copyToDos = [...oldToDos];
+    //   copyToDos.splice(OriIndex, 1);
+    //   copyToDos.splice(DIndex, 0, draggableId);
+    //   return copyToDos;
+    // });
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <GlobalStyle />
       <Wrapper>
         <Boards>
-          <Droppable droppableId="firstBoard">
-            {(magic) => (
-              <Board ref={magic.innerRef} {...magic.droppableProps}>
-                {toDos.map((toDo, idx) => (
-                  <DragableCard key={toDo} toDo={toDo} idx={idx} />
-                ))}
-                {magic.placeholder}
-              </Board>
-            )}
-          </Droppable>
+          {Object.keys(toDos).map((boardId) => (
+            <Board toDos={toDos[boardId]} boardId={boardId} key={boardId} />
+          ))}
         </Boards>
       </Wrapper>
     </DragDropContext>
@@ -135,7 +102,7 @@ export default function App() {
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 480px;
+  max-width: 680px;
   width: 100%;
   margin: 0 auto;
   justify-content: center;
@@ -145,12 +112,6 @@ const Wrapper = styled.div`
 const Boards = styled.div`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(1, 1fr);
-`;
-const Board = styled.div`
-  padding: 20px 10px;
-  padding-top: 30px;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.boardColor};
-  min-height: 200px;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
 `;
