@@ -1,5 +1,5 @@
 import React from "react";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled, { createGlobalStyle } from "styled-components";
 import { dndState } from "./atoms/dnd";
@@ -70,21 +70,40 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
   const [toDos, setToDos] = useRecoilState(dndState);
 
-  const onDragEnd = (args: any) => {
-    if (!args.destination) return;
+  const onDragEnd = (info: DropResult) => {
+    if (!info.destination) return;
     const {
       draggableId,
+      destination,
       destination: { index: DIndex },
+      source,
       source: { index: OriIndex },
-    } = args;
-    console.log(args);
+    } = info;
 
-    // setToDos((oldToDos) => {
-    //   const copyToDos = [...oldToDos];
-    //   copyToDos.splice(OriIndex, 1);
-    //   copyToDos.splice(DIndex, 0, draggableId);
-    //   return copyToDos;
-    // });
+    if (destination.droppableId === source.droppableId) {
+      setToDos((allBoards) => {
+        const boardID = destination.droppableId;
+        const copyBoard = [...allBoards[boardID]];
+        copyBoard.splice(OriIndex, 1);
+        copyBoard.splice(DIndex, 0, draggableId);
+        return { ...allBoards, [boardID]: copyBoard };
+      });
+    } else {
+      setToDos((allBoards) => {
+        const fromBoard = source.droppableId;
+        const toBoard = destination.droppableId;
+
+        const copyFromBoard = [...allBoards[fromBoard]];
+        const copyToBoard = [...allBoards[toBoard]];
+        copyFromBoard.splice(OriIndex, 1);
+        copyToBoard.splice(DIndex, 0, draggableId);
+        return {
+          ...allBoards,
+          [fromBoard]: copyFromBoard,
+          [toBoard]: copyToBoard,
+        };
+      });
+    }
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
