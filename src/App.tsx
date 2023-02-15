@@ -84,8 +84,11 @@ export default function App() {
       setToDos((allBoards) => {
         const boardID = destination.droppableId;
         const copyBoard = [...allBoards[boardID]];
+
+        const Item = allBoards[boardID].filter((el) => el.id === +draggableId);
+
         copyBoard.splice(OriIndex, 1);
-        copyBoard.splice(DIndex, 0, draggableId);
+        copyBoard.splice(DIndex, 0, Item[0]);
         return { ...allBoards, [boardID]: copyBoard };
       });
     } else {
@@ -93,10 +96,14 @@ export default function App() {
         const fromBoard = source.droppableId;
         const toBoard = destination.droppableId;
 
+        const Item = allBoards[fromBoard].filter(
+          (el) => el.id === +draggableId
+        );
+
         const copyFromBoard = [...allBoards[fromBoard]];
         const copyToBoard = [...allBoards[toBoard]];
         copyFromBoard.splice(OriIndex, 1);
-        copyToBoard.splice(DIndex, 0, draggableId);
+        copyToBoard.splice(DIndex, 0, Item[0]);
         return {
           ...allBoards,
           [fromBoard]: copyFromBoard,
