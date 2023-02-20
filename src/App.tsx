@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled, { createGlobalStyle } from "styled-components";
 import { dndState } from "./atoms/dnd";
 import Board from "./components/Board";
+import { AiOutlineFolderAdd } from "react-icons/ai";
+import ModalFrame from "./components/ModalFrame";
+import { useForm } from "react-hook-form";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -68,7 +71,9 @@ const GlobalStyle = createGlobalStyle`
   `;
 
 export default function App() {
-  const [toDos, setToDos] = useRecoilState(dndState);
+  const [cards, setCards] = useRecoilState(dndState);
+  const [isModal, setIsModal] = useState(false);
+  const { register, handleSubmit, reset } = useForm();
 
   const onDragEnd = (info: DropResult) => {
     if (!info.destination) return;
@@ -81,7 +86,7 @@ export default function App() {
     } = info;
 
     if (destination.droppableId === source.droppableId) {
-      setToDos((allBoards) => {
+      setCards((allBoards) => {
         const boardID = destination.droppableId;
         const copyBoard = [...allBoards[boardID]];
 
@@ -92,7 +97,7 @@ export default function App() {
         return { ...allBoards, [boardID]: copyBoard };
       });
     } else {
-      setToDos((allBoards) => {
+      setCards((allBoards) => {
         const fromBoard = source.droppableId;
         const toBoard = destination.droppableId;
 
@@ -112,17 +117,52 @@ export default function App() {
       });
     }
   };
+
+  const handleMakeBoard = () => {
+    setIsModal(true);
+  };
+  const handleModal = () => {
+    setIsModal((prev) => !prev);
+  };
+  const handleAddBoard = (data: Record<string, string>) => {
+    setCards((allBoard) => {
+      return {
+        ...allBoard,
+        [data.board]: [],
+      };
+    });
+    reset();
+    setIsModal(false);
+  };
+
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <>
       <GlobalStyle />
-      <Wrapper>
-        <Boards>
-          {Object.keys(toDos).map((boardId) => (
-            <Board toDos={toDos[boardId]} boardId={boardId} key={boardId} />
-          ))}
-        </Boards>
-      </Wrapper>
-    </DragDropContext>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Wrapper>
+          <Folder onClick={handleMakeBoard}>
+            <AiOutlineFolderAdd />
+          </Folder>
+
+          {isModal && (
+            <ModalFrame handleModal={handleModal}>
+              <h1>Adding URL Board</h1>
+              <hr />
+              <Form onSubmit={handleSubmit(handleAddBoard)}>
+                <input type="text" {...register("board")} />
+                <button>보드 등록</button>
+              </Form>
+            </ModalFrame>
+          )}
+
+          <Boards>
+            {Object.keys(cards).map((boardId) => (
+              <Board toDos={cards[boardId]} boardId={boardId} key={boardId} />
+            ))}
+          </Boards>
+        </Wrapper>
+      </DragDropContext>
+    </>
   );
 }
 
@@ -140,4 +180,31 @@ const Boards = styled.div`
   width: 100%;
   gap: 10px;
   grid-template-columns: repeat(3, 1fr);
+`;
+const Folder = styled.span`
+  position: fixed;
+  top: 3%;
+  right: 3%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: white;
+`;
+const Form = styled.form`
+  display: flex;
+  margin-top: 20px;
+  input {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border: 1px solid lightgray;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  button {
+    border: none;
+    padding: 10px 20px;
+    background-color: ${(props) => props.theme.bgColor};
+    color: white;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
 `;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 interface IDragable {
   toDoID: number;
@@ -17,9 +18,15 @@ function DragableCard({ toDoID, toDoText, toDoUrl, idx }: IDragable) {
           isDragging={snapshot.isDragging}
           ref={magic.innerRef}
           {...magic.draggableProps}
-          {...magic.dragHandleProps}
         >
-          {toDoText}
+          <FlexWrapper>
+            <a href={toDoUrl} rel="noreferrer" target="_blank">
+              {toDoText}
+            </a>
+            <span {...magic.dragHandleProps}>
+              <RxDragHandleDots2 />
+            </span>
+          </FlexWrapper>
         </Card>
       )}
     </Draggable>
@@ -34,6 +41,11 @@ const Card = styled.div<{ isDragging: boolean }>`
     props.isDragging ? "#74b9ff" : props.theme.cardColor};
   box-shadow: ${(props) =>
     props.isDragging ? "0px 2px 5px rgba(0,0,0,0.2)" : null}; ;
+`;
+const FlexWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export default React.memo(DragableCard);

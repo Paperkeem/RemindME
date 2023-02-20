@@ -47,7 +47,5 @@ npm start
       <br />
 - [ ] 보드 간 드래그 앤 드롭
       <br />
-- [ ] 로컬 스토리지 저장
-      <br />
-- [ ] Light / Dark mode
+- [x] 로컬 스토리지 저장
       <br />
