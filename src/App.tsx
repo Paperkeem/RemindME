@@ -7,6 +7,7 @@ import Board from "./components/Board";
 import { AiOutlineFolderAdd } from "react-icons/ai";
 import ModalFrame from "./components/ModalFrame";
 import { useForm } from "react-hook-form";
+import Trash from "./components/Trash";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -96,7 +97,11 @@ export default function App() {
         copyBoard.splice(DIndex, 0, Item[0]);
         return { ...allBoards, [boardID]: copyBoard };
       });
-    } else {
+    }
+    if (
+      destination.droppableId !== source.droppableId &&
+      destination.droppableId !== "trash"
+    ) {
       setCards((allBoards) => {
         const fromBoard = source.droppableId;
         const toBoard = destination.droppableId;
@@ -113,6 +118,17 @@ export default function App() {
           ...allBoards,
           [fromBoard]: copyFromBoard,
           [toBoard]: copyToBoard,
+        };
+      });
+    }
+    if (destination.droppableId == "trash") {
+      setCards((allBoards) => {
+        const fromBoard = source.droppableId;
+        const copyFromBoard = [...allBoards[fromBoard]];
+        copyFromBoard.splice(OriIndex, 1);
+        return {
+          ...allBoards,
+          [fromBoard]: copyFromBoard,
         };
       });
     }
@@ -161,6 +177,7 @@ export default function App() {
             ))}
           </Boards>
         </Wrapper>
+        <Trash />
       </DragDropContext>
     </>
   );
