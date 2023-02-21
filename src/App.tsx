@@ -8,6 +8,7 @@ import { AiOutlineFolderAdd } from "react-icons/ai";
 import ModalFrame from "./components/ModalFrame";
 import { useForm } from "react-hook-form";
 import Trash from "./components/Trash";
+import Seo from "./ui/Seo";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -168,6 +169,7 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
+      <Seo />
       <DragDropContext onDragEnd={onDragEnd}>
         <Wrapper>
           <Folder onClick={handleMakeBoard}>
