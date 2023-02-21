@@ -19,7 +19,7 @@ interface IFrom {
   url: string;
 }
 
-export default function Board({ toDos, boardId, index }: IBoardProps) {
+function Board({ toDos, boardId, index }: IBoardProps) {
   const setDnds = useSetRecoilState(dndState);
   const [isModal, setIsModal] = useState(false);
   const handleModal = () => {
@@ -36,6 +36,8 @@ export default function Board({ toDos, boardId, index }: IBoardProps) {
     reset();
     setIsModal(false);
   };
+
+  console.log(`${boardId} 렌더링`);
   return (
     <>
       <Draggable key={boardId} draggableId={boardId + ""} index={index}>
@@ -79,6 +81,7 @@ export default function Board({ toDos, boardId, index }: IBoardProps) {
     </>
   );
 }
+export default React.memo(Board);
 
 const Title = styled.h3`
   text-align: center;

@@ -32,6 +32,7 @@ function DragableCard({ toDoID, toDoText, toDoUrl, idx }: IDragable) {
     </Draggable>
   );
 }
+export default React.memo(DragableCard);
 
 const Card = styled.div<{ isDragging: boolean }>`
   margin-bottom: 6px;
@@ -48,5 +49,3 @@ const FlexWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-
-export default React.memo(DragableCard);
