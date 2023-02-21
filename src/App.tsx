@@ -197,7 +197,7 @@ export default function App() {
                 <Boards>
                   {boards.map((boardId, index) => (
                     <Board
-                      toDos={cards[boardId]}
+                      cards={cards[boardId]}
                       boardId={boardId}
                       key={boardId}
                       index={index}

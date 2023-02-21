@@ -4,15 +4,15 @@ import styled from "styled-components";
 import { RxDragHandleDots2 } from "react-icons/rx";
 
 interface IDragable {
-  toDoID: number;
-  toDoText: string;
-  toDoUrl: string;
+  cardID: number;
+  cardText: string;
+  cardUrl: string;
   idx: number;
 }
 
-function DragableCard({ toDoID, toDoText, toDoUrl, idx }: IDragable) {
+function DragableCard({ cardID, cardText, cardUrl, idx }: IDragable) {
   return (
-    <Draggable key={toDoID} draggableId={toDoID + ""} index={idx}>
+    <Draggable key={cardID} draggableId={cardID + ""} index={idx}>
       {(magic, snapshot) => (
         <Card
           isDragging={snapshot.isDragging}
@@ -20,8 +20,8 @@ function DragableCard({ toDoID, toDoText, toDoUrl, idx }: IDragable) {
           {...magic.draggableProps}
         >
           <FlexWrapper>
-            <a href={toDoUrl} rel="noreferrer" target="_blank">
-              {toDoText}
+            <a href={cardUrl} rel="noreferrer" target="_blank">
+              {cardText}
             </a>
             <span {...magic.dragHandleProps}>
               <RxDragHandleDots2 />

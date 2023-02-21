@@ -10,7 +10,7 @@ import { RxDragHandleDots2 } from "react-icons/rx";
 import CardBody from "./CardBody";
 
 export interface IBoardProps {
-  toDos: IState[];
+  cards: IState[];
   boardId: string;
   index: number;
 }
@@ -19,12 +19,10 @@ interface IFrom {
   url: string;
 }
 
-function Board({ toDos, boardId, index }: IBoardProps) {
+function Board({ cards, boardId, index }: IBoardProps) {
   const setDnds = useSetRecoilState(dndState);
   const [isModal, setIsModal] = useState(false);
-  const handleModal = () => {
-    setIsModal((prev) => !prev);
-  };
+  const handleModal = () => setIsModal((prev) => !prev);
   const { register, handleSubmit, reset } = useForm<IFrom>();
   const onSubmit = (data: IFrom) => {
     const newItem = { ...data, id: Date.now() };
@@ -37,7 +35,6 @@ function Board({ toDos, boardId, index }: IBoardProps) {
     setIsModal(false);
   };
 
-  console.log(`${boardId} 렌더링`);
   return (
     <>
       <Draggable key={boardId} draggableId={boardId + ""} index={index}>
@@ -56,7 +53,7 @@ function Board({ toDos, boardId, index }: IBoardProps) {
                 </span>
               </Adding>
             </FlexWrapper>
-            <CardBody toDos={toDos} boardId={boardId} />
+            <CardBody cards={cards} boardId={boardId} />
           </Wrapper>
         )}
       </Draggable>

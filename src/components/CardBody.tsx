@@ -9,11 +9,11 @@ interface IAreaProps {
   isDraggingFromThis: boolean;
 }
 interface CardProps {
-  toDos: IState[];
+  cards: IState[];
   boardId: string;
 }
 
-export default function CardBody({ toDos, boardId }: CardProps) {
+export default function CardBody({ cards, boardId }: CardProps) {
   return (
     <Droppable droppableId={boardId}>
       {(magic, snapshot) => (
@@ -23,12 +23,12 @@ export default function CardBody({ toDos, boardId }: CardProps) {
           ref={magic.innerRef}
           {...magic.droppableProps}
         >
-          {toDos.map((toDo, idx) => (
+          {cards.map((card, idx) => (
             <DragableCard
-              key={toDo.id}
-              toDoID={toDo.id}
-              toDoText={toDo.text}
-              toDoUrl={toDo.url}
+              key={card.id}
+              cardID={card.id}
+              cardText={card.text}
+              cardUrl={card.url}
               idx={idx}
             />
           ))}
