@@ -29,5 +29,10 @@ export const dndState = atom<IToDoState>({
   default: {
     Basic: [],
   },
-  // effects: [localStorageEffect("DND")],
+  effects: [localStorageEffect("DND")],
+});
+
+export const boardState = atom<string[]>({
+  key: "Board",
+  default: ["Basic"],
 });

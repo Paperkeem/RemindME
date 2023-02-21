@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { dndState, IState } from "../atoms/dnd";
-import DragableCard from "./DragableCard";
 import ModalFrame from "./ModalFrame";
 import { BiAddToQueue } from "react-icons/bi";
+import { RxDragHandleDots2 } from "react-icons/rx";
+import CardBody from "./CardBody";
 
-interface IBoardProps {
+export interface IBoardProps {
   toDos: IState[];
   boardId: string;
-}
-interface IAreaProps {
-  isDraggingOver: boolean;
-  isDraggingFromThis: boolean;
+  index: number;
 }
 interface IFrom {
   text: string;
   url: string;
 }
 
-export default function Board({ toDos, boardId }: IBoardProps) {
+export default function Board({ toDos, boardId, index }: IBoardProps) {
   const setDnds = useSetRecoilState(dndState);
   const [isModal, setIsModal] = useState(false);
   const handleModal = () => {
@@ -39,17 +37,27 @@ export default function Board({ toDos, boardId }: IBoardProps) {
     setIsModal(false);
   };
   return (
-    <Wrapper>
-      <FlexWrapper>
-        <Title>{boardId}</Title>
-        <Adding
-          onClick={() => {
-            setIsModal(true);
-          }}
-        >
-          <BiAddToQueue />
-        </Adding>
-      </FlexWrapper>
+    <>
+      <Draggable key={boardId} draggableId={boardId + ""} index={index}>
+        {(magic) => (
+          <Wrapper ref={magic.innerRef} {...magic.draggableProps}>
+            <FlexWrapper>
+              <Title>{boardId}</Title>
+              <Adding
+                onClick={() => {
+                  setIsModal(true);
+                }}
+              >
+                <BiAddToQueue />
+                <span {...magic.dragHandleProps}>
+                  <RxDragHandleDots2 />
+                </span>
+              </Adding>
+            </FlexWrapper>
+            <CardBody toDos={toDos} boardId={boardId} />
+          </Wrapper>
+        )}
+      </Draggable>
 
       {isModal && (
         <ModalFrame handleModal={handleModal}>
@@ -68,29 +76,7 @@ export default function Board({ toDos, boardId }: IBoardProps) {
           </Form>
         </ModalFrame>
       )}
-
-      <Droppable droppableId={boardId}>
-        {(magic, snapshot) => (
-          <Area
-            isDraggingOver={snapshot.isDraggingOver}
-            isDraggingFromThis={!!snapshot.draggingFromThisWith}
-            ref={magic.innerRef}
-            {...magic.droppableProps}
-          >
-            {toDos.map((toDo, idx) => (
-              <DragableCard
-                key={toDo.id}
-                toDoID={toDo.id}
-                toDoText={toDo.text}
-                toDoUrl={toDo.url}
-                idx={idx}
-              />
-            ))}
-            {magic.placeholder}
-          </Area>
-        )}
-      </Droppable>
-    </Wrapper>
+    </>
   );
 }
 
@@ -107,17 +93,6 @@ const Wrapper = styled.div`
   padding-top: 10px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.boardColor};
-`;
-const Area = styled.div<IAreaProps>`
-  background-color: ${(props) =>
-    props.isDraggingOver
-      ? "#dfe6e9"
-      : props.isDraggingFromThis
-      ? "#b2bec3"
-      : "transparent"};
-  flex-grow: 1;
-  transition: background-color 0.3s ease-in-out;
-  padding: 20px;
 `;
 const Form = styled.form`
   display: flex;

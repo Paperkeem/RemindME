@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled, { createGlobalStyle } from "styled-components";
-import { dndState } from "./atoms/dnd";
+import { boardState, dndState } from "./atoms/dnd";
 import Board from "./components/Board";
 import { AiOutlineFolderAdd } from "react-icons/ai";
 import ModalFrame from "./components/ModalFrame";
@@ -73,20 +73,31 @@ const GlobalStyle = createGlobalStyle`
 
 export default function App() {
   const [cards, setCards] = useRecoilState(dndState);
+  const [boards, setBoards] = useRecoilState(boardState);
   const [isModal, setIsModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
 
   const onDragEnd = (info: DropResult) => {
     if (!info.destination) return;
+
     const {
       draggableId,
       destination,
       destination: { index: DIndex },
       source,
       source: { index: OriIndex },
+      type,
     } = info;
 
-    if (destination.droppableId === source.droppableId) {
+    if (type === "COLUMN") {
+      setBoards((allBoards) => {
+        const copyBoard = [...allBoards];
+        copyBoard.splice(OriIndex, 1);
+        copyBoard.splice(DIndex, 0, draggableId);
+        return copyBoard;
+      });
+    }
+    if (destination.droppableId === source.droppableId && type !== "COLUMN") {
       setCards((allBoards) => {
         const boardID = destination.droppableId;
         const copyBoard = [...allBoards[boardID]];
@@ -121,7 +132,7 @@ export default function App() {
         };
       });
     }
-    if (destination.droppableId == "trash") {
+    if (destination.droppableId === "trash") {
       setCards((allBoards) => {
         const fromBoard = source.droppableId;
         const copyFromBoard = [...allBoards[fromBoard]];
@@ -147,6 +158,9 @@ export default function App() {
         [data.board]: [],
       };
     });
+    setBoards((allBoards) => {
+      return [...allBoards, data.board];
+    });
     reset();
     setIsModal(false);
   };
@@ -171,11 +185,27 @@ export default function App() {
             </ModalFrame>
           )}
 
-          <Boards>
-            {Object.keys(cards).map((boardId) => (
-              <Board toDos={cards[boardId]} boardId={boardId} key={boardId} />
-            ))}
-          </Boards>
+          <Droppable
+            droppableId="boardSection"
+            type="COLUMN"
+            direction="horizontal"
+          >
+            {(magic) => (
+              <Container ref={magic.innerRef} {...magic.droppableProps}>
+                <Boards>
+                  {boards.map((boardId, index) => (
+                    <Board
+                      toDos={cards[boardId]}
+                      boardId={boardId}
+                      key={boardId}
+                      index={index}
+                    />
+                  ))}
+                  {magic.placeholder}
+                </Boards>
+              </Container>
+            )}
+          </Droppable>
         </Wrapper>
         <Trash />
       </DragDropContext>
@@ -185,18 +215,24 @@ export default function App() {
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 680px;
+  flex-direction: row;
+  /* max-width: 680px; */
   width: 100%;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
   height: 100vh;
 `;
+const Container = styled.div``;
+
 const Boards = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  /* display: grid;
   width: 100%;
   gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); */
 `;
 const Folder = styled.span`
   position: fixed;

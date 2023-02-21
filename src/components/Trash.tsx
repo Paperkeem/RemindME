@@ -1,5 +1,5 @@
 import React from "react";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 import { GoTrashcan } from "react-icons/go";
 import styled from "styled-components";
 
