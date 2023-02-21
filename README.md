@@ -75,7 +75,9 @@ https://github.com/Paperkeem/RemindME/blob/8c7ea9b3aecc15553478726ff54da68bf518d
 - 보드간 이동 구현을 위해 `Droppable 영역`을 할당, type과 direction 방향을 설정
 - `onDragEnd` 함수에서 `type === "COLUMN"`일 시에 보드 이동임을 판단하게끔 구현
 - map 함수를 이용하여 보드 배열의 element를 cards 객체의 key로 할당, 배열로 이루어진 cards의 value를 props에 전달 `cards={cards[boardId]}`
-  
+
+<br />
+
 - [x] DND 시 컴포넌트 렌더링 최적화
 - Recat.memo로 컴포넌트를 감싸 메모이제이션, 드래그와 관련된 컴포넌트가 아닐 시 재렌더링 되지 않도록 구현
       
