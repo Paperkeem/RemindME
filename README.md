@@ -11,14 +11,12 @@
    <img width="500px" src="https://user-images.githubusercontent.com/107424974/220314655-8a134c3b-c5b2-4833-a41b-2ddaa7fed255.gif"/>
 
    <br />
-   <br />
    
 카드 이름과 URL 주소를 적어 **URL 카드를 만들어 보세요.**
 <br />
 URL 카드를 **쓰레기통으로 드래그**하면, URL 카드가 **삭제**됩니다.
    <img width="500px" src="https://user-images.githubusercontent.com/107424974/220314411-4833f86e-9b05-4f8c-b96a-1e71457f6077.gif"/>
 
-   <br />
    <br />
    
 **URL 카드를 클릭**하여 내가 저장한 주소로 편하게 이동해보세요!
@@ -74,7 +72,8 @@ npm start
 - [x] 로컬 스토리지 저장
       <br />
 
-
+<br />
+      
 ## 추후 구현사항
 - [ ] 카드 수정 기능
       <br />
